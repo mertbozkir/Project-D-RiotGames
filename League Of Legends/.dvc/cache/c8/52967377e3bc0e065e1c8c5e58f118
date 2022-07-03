@@ -1,0 +1,92 @@
+import pandas as pd
+import seaborn as sns
+from matplotlib import pyplot as plt
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+from lightgbm import LGBMClassifier
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix, classification_report
+
+
+
+
+def model_development(dataframe, model = 'LightGBM', cv = True, cv_number = 10, grid_cv = False):
+    lgbm = dt = logreg = rf = None
+    X = dataframe.drop('blueWins', axis = 1)
+    y = dataframe['blueWins']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+
+    if model == 'LightGBM':
+        lgbm = LGBMClassifier()
+        lgbm.fit(X_train, y_train)
+        y_pred = lgbm.predict(X_test)
+        acc = accuracy_score(y_pred, y_test)
+        if cv:
+            cv_results = cross_validate(lgbm, X, y, cv = cv_number)
+
+    if model == 'Random_Forest':
+        rf = RandomForestClassifier()
+        rf.fit(X_train, y_train)
+        y_pred = rf.predict(X_test)
+        acc = accuracy_score(y_pred, y_test)
+        if cv:
+            cv_results = cross_validate(rf, X, y, cv = cv_number)
+        if grid_cv:
+            rf_params = {'max_depth': [5, 8, None],
+            'max_features': [3, 5, 7, 'auto'],
+            'min_samples_split': [2, 5, 8, 15, 20],
+            'n_estimators': [100, 200, 500]}
+            rf_best_grid = GridSearchCV(rf, rf_params, cv = 5, n_jobs = -1, verbose = True).fit(X, y)
+            rf = rf.set_params(**rf_best_grid.best_params_, random_state = 17).fit(X, y)
+
+            rf.fit(X_train, y_train)
+            y_pred = rf.predict(X_test)
+            acc = accuracy_score(y_pred, y_test)          
+
+    if model == 'Logistic_Regression':
+        logreg = LogisticRegression()
+
+        logreg.fit(X_train, y_train)
+
+        y_pred = logreg.predict(X_test)
+
+        acc = accuracy_score(y_pred, y_test)
+
+
+
+    if model == 'Decision_Tree':
+        dt = DecisionTreeClassifier(max_depth=6, random_state=1)
+
+        dt.fit(X_train, y_train)
+
+        y_pred = dt.predict(X_test)
+
+        acc = accuracy_score(y_pred, y_test)
+
+        if cv:
+            cv_results = cross_validate(dt, X, y, cv = cv_number)
+    
+    label = f'{model} accuracy score'
+    value = f'{acc:0.4f}'
+
+    st.metric(label, value, delta=None, delta_color="normal")
+
+
+
+    
+
+def plot_importance(model, features, num = 10, save = False):
+    feature_imp = pd.DataFrame({'Value': model.feature_importances_, 'Feature': features.columns})
+    plt.figure(figsize = (10, 10))
+    sns.set(font_scale = 1)
+    sns.barplot(x = 'Value', y = 'Feature', 
+                data = feature_imp.sort_values(by = 'Value', ascending = False)[0:num])
+    plt.title('Features')
+    plt.tight_layout()
+    plt.show()
+    if save:
+        plt.savefig('importances.png')

@@ -1,0 +1,52 @@
+stages:
+  preprocess:
+    cmd: python source/preprocess.py data/challenger_ranked_games/Ranked_Games_10minute.csv data/challenger_ranked_games/Ranked_Games_15minute.csv 
+    deps:
+    - data/challenger_ranked_games/Ranked_Games_10minute.csv
+    - data/challenger_ranked_games/Ranked_Games_15minute.csv
+    - source/preprocess.py
+    params:
+    - preprocess.min
+    - preprocess.test_size
+    outs:
+    - prepared/train_dataframe.csv
+    - prepared/test_dataframe.csv
+
+  featurize:
+    cmd: python source/featurize.py prepared/train_dataframe.csv prepared/test_dataframe.csv
+    deps:
+    - source/featurize.py
+    - prepared/train_dataframe.csv
+    - prepared/test_dataframe.csv
+
+    outs:
+    - features/train_features.csv
+    - features/test_features.csv
+
+  train:
+    cmd: python source/train.py features/train_features.csv 
+    deps:
+    - features/train_features.csv
+    - source/train.py
+    params:
+    - train.model
+    outs:
+    - models/LGBMClassifier.pkl
+
+  evaluate:
+    cmd: python source/evaluate.py models/LGBMClassifier.pkl features/train_features.csv features/test_features.csv
+    deps:
+    - source/evaluate.py
+    - models/LGBMClassifier.pkl
+    - features/train_features.csv
+    - features/test_features.csv
+    params: 
+    - evaluate.fold_number
+    metrics:
+    - scores.json:
+        cache: false
+    plots:
+    - prc.json:
+        cache: false
+        x: recall
+        y: precision

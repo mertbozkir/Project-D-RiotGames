@@ -1,0 +1,18 @@
+cmd: python source/featurize.py prepared/train_dataframe.csv prepared/test_dataframe.csv
+deps:
+- path: prepared/test_dataframe.csv
+  md5: 0bdadd9921eae29810e72ec1b6c11618
+  size: 1044330
+- path: prepared/train_dataframe.csv
+  md5: b6efb0b6dc587ea9e2e42be29f50a11b
+  size: 3130662
+- path: source/featurize.py
+  md5: ecd930a77b0f10fcec5e98fee6c3ef06
+  size: 1515
+outs:
+- path: features/test_features.csv
+  md5: 652a1679ac4255acef00d4a69e47abb0
+  size: 1455825
+- path: features/train_features.csv
+  md5: fbb27b489982d3e4a76a13ad56ec089a
+  size: 4375745

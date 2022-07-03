@@ -1,0 +1,5 @@
+outs:
+- md5: b07cbbe5fa2789956a7e89723477770a.dir
+  size: 8864814
+  nfiles: 2
+  path: challenger_ranked_games

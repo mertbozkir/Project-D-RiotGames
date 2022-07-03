@@ -1,0 +1,23 @@
+cmd: python source/preprocess.py data/challenger_ranked_games/Ranked_Games_10minute.csv
+  data/challenger_ranked_games/Ranked_Games_15minute.csv
+deps:
+- path: data/challenger_ranked_games/Ranked_Games_10minute.csv
+  md5: 2c17d6e03bb30f1ceaf964e7a53ac872
+  size: 4096845
+- path: data/challenger_ranked_games/Ranked_Games_15minute.csv
+  md5: c329be217349b2c611bc10fb11bcca84
+  size: 4767969
+- path: source/preprocess.py
+  md5: 10475b65c44a78b7939081f8841724a9
+  size: 3150
+params:
+  params.yaml:
+    preprocess.min: 10
+    preprocess.test_size: 0.25
+outs:
+- path: prepared/test_dataframe.csv
+  md5: 0bdadd9921eae29810e72ec1b6c11618
+  size: 1044330
+- path: prepared/train_dataframe.csv
+  md5: b6efb0b6dc587ea9e2e42be29f50a11b
+  size: 3130662

@@ -1,0 +1,15 @@
+cmd: python source/train.py features/train_features.csv
+deps:
+- path: features/train_features.csv
+  md5: fbb27b489982d3e4a76a13ad56ec089a
+  size: 4375745
+- path: source/train.py
+  md5: 9beafea79a1053839db551c8ffe789ab
+  size: 1662
+params:
+  params.yaml:
+    train.model: LGBMClassifier
+outs:
+- path: models/LGBMClassifier.pkl
+  md5: d97a22d72b97125426df9eb8392e033f
+  size: 347755

@@ -1,0 +1,15 @@
+from sklearn.model_selection import cross_validate, GridSearchCV
+    
+    
+
+if cv:
+    st.write(f"(Cross Validation Score): {round(cv_results['test_score'].mean(), 4)}")
+
+    st.json(classification_report(y_test, y_pred, output_dict = True))
+    st.write('Confusion Matrix')
+    st.write(confusion_matrix(y_test, y_pred))
+
+    model_dict = {'LightGBM': lgbm, 'Decision_Tree': dt, 'Logistic_Regression': logreg, 'Random_Forest': rf}
+
+    return X, model_dict[model]
+

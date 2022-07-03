@@ -1,0 +1,9 @@
+preprocess: 
+  min: 10
+  test_size: 0.25
+
+train:
+  model: 'LGBMClassifier'
+
+evaluate: 
+  fold_number: 10
